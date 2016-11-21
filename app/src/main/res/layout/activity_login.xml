@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fitsSystemWindows="true">
@@ -17,6 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="24dp"
+            android:contentDescription="@string/logo_description"
             android:src="@drawable/logo" />
 
         <!--  Email Label -->
@@ -67,23 +69,39 @@
             android:text="No account yet? Create one"
             android:textSize="16sp" />
 
-       <com.facebook.login.widget.LoginButton
-            android:id="@+id/facebook_sign_in_button"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/social_media"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="15dp" />
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="OR"
+            android:textSize="16sp" />
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/facebook_sign_in_button"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="18dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:textSize="15sp"
+            facebook:com_facebook_login_text="Log in with Facebook"
+            />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/google_sign_in_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:textSize="50sp" />
 
         <com.twitter.sdk.android.core.identity.TwitterLoginButton
             android:id="@+id/twitter_login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp" />
 
 
     </LinearLayout>

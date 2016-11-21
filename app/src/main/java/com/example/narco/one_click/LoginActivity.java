@@ -2,6 +2,7 @@ package com.example.narco.one_click;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -52,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     Button _loginButton;
     @BindView(R.id.link_signup)
     TextView _signupLink;
-
+    private SignInButton mGoogleSignInButton;
 
 
     @Override
@@ -91,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         twitterCallBack();
         googleCallBack();
         facebookCallBack();
+        setGooglePlusButtonText(mGoogleSignInButton, "Log in with Google");
     }
 
     private void twitterCallBack() {
@@ -115,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void googleCallBack() {
-        SignInButton mGoogleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
+        mGoogleSignInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
         mGoogleSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,6 +142,21 @@ public class LoginActivity extends AppCompatActivity {
 
         final Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    protected void setGooglePlusButtonText(SignInButton signInButton,
+                                           String buttonText) {
+        for (int i = 0; i < signInButton.getChildCount(); i++) {
+            View v = signInButton.getChildAt(i);
+
+            if (v instanceof TextView) {
+                TextView tv = (TextView) v;
+                tv.setTextSize(18);
+                tv.setTypeface(null, Typeface.NORMAL);
+                tv.setText(buttonText);
+                return;
+            }
+        }
     }
 
     private void facebookCallBack() {
