@@ -18,6 +18,7 @@
 
         <activity
             android:name="com.example.narco.one_click.MainActivity"
+            android:theme="@style/MaterialDrawerTheme.Light.DarkToolbar"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,6 +37,8 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+
     </application>
 
 </manifest>

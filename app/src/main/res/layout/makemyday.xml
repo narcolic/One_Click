@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="56dp">
+
+        <TextView
+            android:id="@+id/restaurant"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="left"
+            android:text="Coffee hour"
+            android:textColor="@color/base"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/a1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/logo_description"
+                android:src="@drawable/museum" />
+
+            <ImageView
+                android:id="@+id/a2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/logo_description"
+                android:src="@drawable/museum" />
+
+            <ImageView
+                android:id="@+id/a3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/logo_description"
+                android:src="@drawable/museum" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/link_museum"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="left"
+            android:text="Lunch Time"
+            android:textColor="@color/base"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/md3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/logo_description"
+                android:src="@drawable/museum" />
+
+            <ImageView
+                android:id="@+id/md4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/logo_description"
+                android:src="@drawable/museum" />
+
+            <ImageView
+                android:id="@+id/md5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/logo_description"
+                android:src="@drawable/museum" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/scenery"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="left"
+            android:text="Afternoon"
+            android:textColor="@color/base"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/md6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/logo_description"
+                android:src="@drawable/museum" />
+
+            <ImageView
+                android:id="@+id/md7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/logo_description"
+                android:src="@drawable/museum" />
+
+            <ImageView
+                android:id="@+id/md8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginRight="30dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/logo_description"
+                android:src="@drawable/museum" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>

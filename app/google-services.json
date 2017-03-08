@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "529082863682",
+    "project_id": "one-click-eaad9"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:529082863682:android:b04b0bb88f424897",
+        "android_client_info": {
+          "package_name": "com.example.narco.one_click"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "529082863682-l59qajlkml5tnb4oueo880o3o33h8lth.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.narco.one_click",
+            "certificate_hash": "3AA9D781FAE9AB3F500FEF1328E6661289D861DA"
+          }
+        },
+        {
+          "client_id": "529082863682-v8tsj082ok5dl0sjo0rs85mhlig2a9e8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAc0sWIgl85KV9kHwTw46j3unIDQ72YrEE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

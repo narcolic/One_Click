@@ -1,0 +1,17 @@
+<tabs>
+    <tab
+        icon="@drawable/ic_first"
+        id="@+id/tab_suggestions"
+        title="Suggestions"
+        barColorWhenSelected="#FF6B44"/>
+    <tab
+        icon="@drawable/ic_second"
+        id="@+id/tab_map"
+        title="Map"
+        barColorWhenSelected="#FFBF27"/>
+    <tab
+        icon="@drawable/ic_third"
+        id="@+id/tab_makemyday"
+        title="Make My Day"
+        barColorWhenSelected="#57C1FF"/>
+</tabs>
