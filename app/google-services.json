@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "529082863682",
-    "project_id": "one-click-eaad9"
+    "firebase_url": "https://one-click-eaad9.firebaseio.com",
+    "project_id": "one-click-eaad9",
+    "storage_bucket": "one-click-eaad9.appspot.com"
   },
   "client": [
     {
@@ -13,11 +15,15 @@
       },
       "oauth_client": [
         {
+          "client_id": "529082863682-l1unkoo1b8ch8ilsjuc3mv0touq0il1s.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
           "client_id": "529082863682-l59qajlkml5tnb4oueo880o3o33h8lth.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.narco.one_click",
-            "certificate_hash": "3AA9D781FAE9AB3F500FEF1328E6661289D861DA"
+            "certificate_hash": "3aa9d781fae9ab3f500fef1328e6661289d861da"
           }
         },
         {
@@ -35,11 +41,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "529082863682-l1unkoo1b8ch8ilsjuc3mv0touq0il1s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

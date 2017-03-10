@@ -18,8 +18,8 @@
 
         <activity
             android:name="com.example.narco.one_click.MainActivity"
-            android:theme="@style/MaterialDrawerTheme.Light.DarkToolbar"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/MaterialDrawerTheme.Light.DarkToolbar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,6 +37,34 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.example.narco.one_click.Drawer.FavoritesActivity"
+            android:theme="@style/DrawerTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.narco.one_click.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.narco.one_click.Drawer.PostcardsActivity"
+            android:theme="@style/DrawerTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.narco.one_click.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.narco.one_click.Drawer.ReviewsActivity"
+            android:theme="@style/DrawerTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.narco.one_click.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.narco.one_click.Drawer.SettingsActivity"
+            android:theme="@style/DrawerTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.narco.one_click.MainActivity" />
+        </activity>
 
 
     </application>
