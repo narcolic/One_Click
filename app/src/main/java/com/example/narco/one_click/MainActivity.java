@@ -38,14 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-       /* FirebaseAuth.AuthStateListener mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                checkLogin(user);
-            }
-        };*/
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         checkLogin(user);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
@@ -53,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         if (user != null) {
             getSupportActionBar().setTitle(user.getEmail());
         }
-
 
         result = new DrawerBuilder(this)
                 //this layout have to contain child layouts
