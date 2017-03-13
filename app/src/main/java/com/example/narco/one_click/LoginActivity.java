@@ -18,6 +18,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -34,26 +35,17 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
-import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.fabric.sdk.android.Fabric;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
     private CallbackManager mFacebookCallbackManager;
     private GoogleApiClient mGoogleApiClient;
-    private LoginActivity mTwitterSignInButton;
     private SignInButton mGoogleSignInButton;
     private static final int RC_SIGN_IN = 9001;
 
@@ -112,35 +104,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        TwitterAuthConfig authConfig = new TwitterAuthConfig("YExD4EaRk6spVw5uFu4T3dD6b",
-                "Eu7UB0G0dDn5AxNYYnQM9tDfBDI8ZYOZZpkZqvotUwvizrxocO");
-        Fabric.with(this, new TwitterCore(authConfig));
-
-        twitterCallBack();
         googleCallBack();
         facebookCallBack();
+        LoginManager.getInstance().logOut();
         setGooglePlusButtonText(mGoogleSignInButton, "Log in with Google");
-    }
-
-    private void twitterCallBack() {
-        TwitterLoginButton loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
-        loginButton.setCallback(new Callback<TwitterSession>() {
-            @Override
-            public void success(Result<TwitterSession> result) {
-                // The TwitterSession is also available through:
-                // Twitter.getInstance().core.getSessionManager().getActiveSession()
-                TwitterSession session = result.data;
-                // TODO: Remove toast and use the TwitterSession's userID
-                // with your app's user model
-                String msg = "@" + session.getUserName() + " logged in! (#" + session.getUserId() + ")";
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void failure(TwitterException exception) {
-                Log.d("TwitterKit", "Login with Twitter failure", exception);
-            }
-        });
     }
 
     private void googleCallBack() {
@@ -266,10 +233,7 @@ public class LoginActivity extends AppCompatActivity {
                 onLoginFailed();
             }
         }
-        //twitter
-        else if (TwitterAuthConfig.DEFAULT_AUTH_REQUEST_CODE == requestCode) {
-            mTwitterSignInButton.onActivityResult(requestCode, resultCode, data);
-        }
+
         //facebook
         mFacebookCallbackManager.onActivityResult(requestCode, resultCode, data);
     }

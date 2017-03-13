@@ -37,9 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         checkLogin(user);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
         if (user != null) {
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 .withDisplayBelowStatusBar(false)
                 .withActionBarDrawerToggleAnimated(true)
                 .addDrawerItems(
-                         new PrimaryDrawerItem().withName(R.string.drawer_favorites).withIcon(FontAwesome.Icon.faw_heart),
+                        new PrimaryDrawerItem().withName(R.string.drawer_favorites).withIcon(FontAwesome.Icon.faw_heart),
                         new PrimaryDrawerItem().withName(R.string.drawer_my_reviews).withIcon(FontAwesome.Icon.faw_comments),
                         new PrimaryDrawerItem().withName(R.string.drawer_postcards).withIcon(FontAwesome.Icon.faw_camera_retro),
                         new DividerDrawerItem(),
@@ -151,9 +151,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    boolean checkLogin(FirebaseUser user){
+    boolean checkLogin(FirebaseUser user) {
         // Check login status
-        if(user == null){
+        if (user == null) {
 
             // user is not logged in redirect him to Login Activity
             Intent i = new Intent(MainActivity.this, LoginActivity.class);
