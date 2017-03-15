@@ -4,7 +4,7 @@ package com.example.narco.one_click.Drawer;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 
-public class SettingsActivity extends DrawerItemActivity {
+public class SettingsActivity extends SinglePageWithUpBarActivity {
 
     @Override
     protected Fragment createFragment() {

@@ -17,7 +17,7 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC5md7GDFAtZc8HBMxx4Y-kyxS2hxcLM9A"/>
+            android:value="AIzaSyC5md7GDFAtZc8HBMxx4Y-kyxS2hxcLM9A" />
 
         <activity
             android:name="com.example.narco.one_click.MainActivity"
@@ -34,7 +34,8 @@
             android:theme="@style/AppTheme.Dark" />
         <activity
             android:name="com.example.narco.one_click.SignupActivity"
-            android:theme="@style/AppTheme.Dark" />
+            android:theme="@style/AppTheme.Dark"
+            android:exported="true"/>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -62,23 +63,17 @@
                 android:value="com.example.narco.one_click.MainActivity" />
         </activity>
         <activity
+            android:name="com.example.narco.one_click.InterestsActivity"
+            android:exported="true"
+            android:theme="@style/DrawerTheme" />
+        <activity
             android:name="com.example.narco.one_click.Drawer.SettingsActivity"
             android:theme="@style/DrawerTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.narco.one_click.MainActivity" />
         </activity>
-        <activity
-            android:name=".PlacesListItemActivity"
-            android:label="@string/app_name"
-            android:theme="@style/MaterialDrawerTheme.Light.DarkToolbar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".PlaceDetailActivity"></activity>
+        <activity android:name=".PlaceDetailActivity" />
 
 
     </application>

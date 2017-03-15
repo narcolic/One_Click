@@ -9,7 +9,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.example.narco.one_click.R;
 
-public abstract class DrawerItemActivity extends AppCompatActivity {
+public abstract class SinglePageWithUpBarActivity extends AppCompatActivity {
 
     protected abstract Fragment createFragment();
 

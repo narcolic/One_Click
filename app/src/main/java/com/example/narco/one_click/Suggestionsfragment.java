@@ -2,6 +2,7 @@ package com.example.narco.one_click;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,10 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.narco.one_click.model.GooglePlace;
@@ -28,8 +28,7 @@ import java.net.URLEncoder;
 public class Suggestionsfragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private GooglePlaceList nearby;
-    private ListView list;
-    private LinearLayout hilayout;
+    private RelativeLayout relativeLayout;
     private String placesKey;
     /* Location is Aston University */
     private double latitude = 52.485867;
@@ -39,8 +38,7 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.suggestions, container, false);
-        list = (ListView) v.findViewById(R.id.the_list);
-        hilayout = (LinearLayout) v.findViewById(R.id.linear);
+        relativeLayout = (RelativeLayout) v.findViewById(R.id.relative);
         nearby = null;
 
         placesKey = this.getResources().getString(R.string.places_key);
@@ -53,38 +51,72 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
             PlacesReadFeed process = new PlacesReadFeed();
             process.execute(placesRequest);
         }
-
-
         return v;
     }
 
-    protected void reportBack(GooglePlaceList nearby) {
+    protected void reportBack(final GooglePlaceList nearby) {
         if (this.nearby == null) {
             this.nearby = nearby;
 
         } else {
             this.nearby.getResults().addAll(nearby.getResults());
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity().getApplicationContext(),
-                android.R.layout.simple_list_item_1, this.nearby.getPlaceNames());
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(this);
 
         for (int i = 0; i < nearby.getResults().size(); i++) {
             ImageView imageView = new ImageView(getActivity());
-            String ok = nearby.getPhotoUrl().get(i);
             Ion.with(imageView)
                     .placeholder(R.drawable.ic_postcard)
-                    .load(ok);
-            //.load(nearby.getResults().get(i).);
+                    .load(nearby.getPhotoUrl().get(i));
             imageView.setId(i);
             imageView.setPadding(2, 2, 2, 2);
-//            imageView.setImageBitmap(BitmapFactory.decodeResource(
-//                    getResources(), R.drawable.ic_favorites));
-//            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            hilayout.addView(imageView);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setBackgroundResource(R.drawable.shadow);
+            imageView.setMinimumHeight(400);
+            imageView.setMinimumWidth(600);
+            imageView.isClickable();
+            final GooglePlace place = nearby.getResults().get(i);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+
+                    Intent ok = new Intent(getActivity(), PlaceDetailActivity.class);
+                    ok.putExtra("PLACE", place);
+                    startActivity(ok);
+                }
+            });
+            TextView textView = new TextView(getActivity());
+            String upToNCharacters = place.getName().substring(0, Math.min(place.getName().length(), 25));
+            textView.setText("  "+upToNCharacters);
+            textView.setTextColor(Color.WHITE);
+
+            layoutConfig(i, imageView, textView);
         }
 
+    }
+
+    private void layoutConfig(int i, ImageView imageView, TextView textView) {
+        if (i == 0) {
+            RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams rlp2 = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            rlp2.addRule(RelativeLayout.ALIGN_BOTTOM, imageView.getId());
+            relativeLayout.addView(imageView, rlp1);
+            relativeLayout.addView(textView, rlp2);
+        } else {
+            RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams rlp2 = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            rlp1.addRule(RelativeLayout.RIGHT_OF, imageView.getId() - 1);
+            rlp2.addRule(RelativeLayout.RIGHT_OF, imageView.getId()-1);
+            rlp2.addRule(RelativeLayout.ALIGN_BOTTOM,imageView.getId()-1);
+            relativeLayout.addView(imageView, rlp1);
+            relativeLayout.addView(textView, rlp2);
+        }
     }
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

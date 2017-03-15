@@ -17,6 +17,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,6 +27,7 @@ public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
     private FirebaseAuth mAuth;
+    private DatabaseReference databaseReference;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     @BindView(R.id.input_name)
@@ -47,6 +50,7 @@ public class SignupActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         mAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -96,10 +100,9 @@ public class SignupActivity extends AppCompatActivity {
         progressDialog.setMessage("Creating Account...");
         progressDialog.show();
 
-        String name = _nameText.getText().toString();
+        final String name = _nameText.getText().toString();
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
-        String reEnterPassword = _reEnterPasswordText.getText().toString();
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -110,6 +113,7 @@ public class SignupActivity extends AppCompatActivity {
                             onSignupFailed();
                             progressDialog.dismiss();
                         } else {
+                            saveUserInterests(name);
                             onSignupSuccess();
                             progressDialog.dismiss();
                         }
@@ -117,11 +121,21 @@ public class SignupActivity extends AppCompatActivity {
                 });
     }
 
+    private void saveUserInterests(String name) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            databaseReference.child(user.getUid()).child("name").setValue(name);
+        }
+    }
+
 
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
+        Intent intent = new Intent(getApplicationContext(), InterestsActivity.class);
+        startActivity(intent);
         finish();
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     public void onSignupFailed() {
