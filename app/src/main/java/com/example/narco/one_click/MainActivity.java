@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
                     result.closeDrawer();
                 } else if (tabId == R.id.tab_suggestions) {
-                    Makemydayfragment f = new Makemydayfragment();
+                    Suggestionsfragment f = new Suggestionsfragment();
                     getSupportFragmentManager().beginTransaction().replace(R.id.frame, f).commit();
                     result.closeDrawer();
                 } else if (tabId == R.id.tab_makemyday) {

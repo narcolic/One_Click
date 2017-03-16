@@ -246,7 +246,7 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
-
+        //TODO: Check if user has previously signed in with google
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -258,7 +258,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            onLoginSuccess();
+                            onGoogleLoginSuccess();
                             progressDialog.dismiss();
                         }
                     }
@@ -302,6 +302,14 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
         finish();
+    }
+
+    public void onGoogleLoginSuccess() {
+        Intent intent = new Intent(getApplicationContext(), InterestsActivity.class);
+        startActivity(intent);
+        _loginButton.setEnabled(true);
+        finish();
+        overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
     public void onLoginFailed() {

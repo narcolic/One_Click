@@ -20,13 +20,11 @@ import butterknife.ButterKnife;
 
 public class InterestsActivity extends AppCompatActivity {
 
-    //TODO:remove exported from manifest
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     private List<String> interestsList;
 
     private int checkCounter = 0;
-    //private FirebaseAuth.AuthStateListener mAuthListener;
 
     @BindView(R.id.btn_interest)
     Button _submitButton;
@@ -65,7 +63,6 @@ public class InterestsActivity extends AppCompatActivity {
                 submit();
             }
         });
-
     }
 
     private void saveUserInterests() {
@@ -74,7 +71,6 @@ public class InterestsActivity extends AppCompatActivity {
         if (user != null) {
             databaseReference.child(user.getUid()).child("interest").setValue(interestsList);
         }
-
         Toast.makeText(this, "Selections saved...", Toast.LENGTH_LONG).show();
 
     }
@@ -148,22 +144,6 @@ public class InterestsActivity extends AppCompatActivity {
             interestsList.add("Sport");
         }
     }
-
-
-
-    /*@Override
-    public void onStop() {
-        super.onStop();
-        if (mAuthListener != null) {
-            firebaseAuth.removeAuthStateListener(mAuthListener);
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        firebaseAuth.addAuthStateListener(mAuthListener);
-    }*/
 
     @Override
     public void onBackPressed() {
