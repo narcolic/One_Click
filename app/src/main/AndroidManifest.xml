@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.narco.one_click">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -73,6 +76,11 @@
                 android:value="com.example.narco.one_click.MainActivity" />
         </activity>
         <activity android:name=".PlaceDetailActivity" />
+        <activity
+            android:name="com.example.narco.one_click.LocationTrackerActivity"
+            android:theme="@style/AppTheme.Dark"
+            android:exported="true"/>
+
 
 
     </application>

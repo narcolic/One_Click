@@ -34,42 +34,71 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Suggestionsfragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private GooglePlaceList nearby;
-    private List<GooglePlaceList> googlePlacesList;
-    private List<String> interestList;
     LinearLayout linearLayout;
+    Double latitude;
+    Double longitude;
+    private List<String> interestList;
+    private List<Double> latlong;
+    List<String> urlList;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.suggestions, container, false);
-        //relativeLayout = (RelativeLayout) v.findViewById(R.id.relative);
-        googlePlacesList = new ArrayList<>();
+
+        //Get Current location
+        Intent i = new Intent(getActivity(), LocationTrackerActivity.class);
+        getActivity().startActivity(i);
+
+        String placesKey = this.getResources().getString(R.string.places_key);
         interestList = new ArrayList<>();
+        latlong = new ArrayList<>();
+        nearby = null;
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         linearLayout = (LinearLayout) v.findViewById(R.id.main_layout);
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        List<String> urlList = new ArrayList<>();
-        urlList.add("https://maps.googleapis.com/maps/api/place/nearbysearch/json?&location=52.4,-1.6&radius=500&key=AIzaSyD79S9Un0Ti8tDT_el4ko7ItRJz3KapOLA");
-        urlList.add("https://maps.googleapis.com/maps/api/place/nearbysearch/json?&location=53.4,-1.4&radius=5000&key=AIzaSyD79S9Un0Ti8tDT_el4ko7ItRJz3KapOLA");
-        urlList.add("https://maps.googleapis.com/maps/api/place/nearbysearch/json?&location=52.4,-1.2&radius=500&key=AIzaSyD79S9Un0Ti8tDT_el4ko7ItRJz3KapOLA");
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
         if (user != null) {
-            databaseReference.child(user.getUid()).child("interest").addListenerForSingleValueEvent(new ValueEventListener() {
+
+            DatabaseReference ref1 = databaseReference.child(user.getUid()).child("interest");
+            readData(ref1, new OnGetDataListener() {
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+                    Log.d("ONSUCCESS", "Success");
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        String interests = postSnapshot.getValue(String.class);
+                        interestList.add(interests);
+                    }
+                }
+                @Override
+                public void onStart() {
+                    //whatever you need to do onStart
+                    Log.d("ONSTART", "Started");
+                }
+
+                @Override
+                public void onFailure() {
+                    Log.d("ONFAILURE", "Failure");
+                }
+            });
+            databaseReference.child(user.getUid());
+            databaseReference.child("location");
+            databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-
+                    Log.d("ONDATACHANGED", "listener2 entered");
                     try {
                         if (dataSnapshot.getValue() != null) {
-                            Map<String, String> value = (Map<String, String>) dataSnapshot.getValue();
-                            for (Map.Entry<String, String> entry : value.entrySet()) {
-                                String _value = entry.getValue();
-                                interestList.add(_value);
+                            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                                Double loc = postSnapshot.getValue(Double.class);
+                                latlong.add(loc);
                             }
+
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -82,20 +111,18 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
                 }
             });
         }
-        nearby = null;
+        latitude = latlong.get(0);
+        longitude = latlong.get(1);
 
-        String placesKey = this.getResources().getString(R.string.places_key);
+        int radius = 500;
+        urlList = generateUrlList(interestList, longitude, latitude, radius, placesKey);
         if (placesKey.equals("PUT YOUR KEY HERE"))
             Toast.makeText(getActivity(), "You haven't entered your Google Places Key into the strings file.  Dont forget to set a referer too.", Toast.LENGTH_LONG).show();
         else {
-            double latitude = 52.485867;
-            double longitude = -1.890161;
-            //String placesRequest = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + latitude + "," + longitude + "&radius=500&key=" + placesKey;
             PlacesReadFeed process = new PlacesReadFeed();
             process.execute(urlList);
 
         }
-
 
         return v;
     }
@@ -123,13 +150,9 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
             ll.setBackgroundResource(R.drawable.bg_round_rect);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(10, 10, 10, 0);
+            layoutParams.setMargins(10, 20, 10, 20);
 
-
-            HorizontalScrollView.LayoutParams hsvparams = new HorizontalScrollView.LayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,450));
-            //ll.setBackgroundResource(R.drawable.bg_round_rect);
-
-
+            HorizontalScrollView.LayoutParams hsvparams = new HorizontalScrollView.LayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 450));
 
             boxTitle.setTextColor(Color.WHITE);
             boxTitle.setTextSize(25);
@@ -158,7 +181,7 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
                     }
                 });
                 TextView textView = new TextView(getActivity());
-                String upToNCharacters = place.getName().substring(0, Math.min(place.getName().length(), 25));
+                String upToNCharacters = place.getName().substring(0, Math.min(place.getName().length(), 17));
                 textView.setText("  " + upToNCharacters);
                 textView.setTextColor(Color.WHITE);
 
@@ -187,8 +210,8 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
                 }
             }
             hsv.addView(relativeLayout);
-            ll.addView(hsv,hsvparams);
-            linearLayout.addView(ll,layoutParams);
+            ll.addView(hsv, hsvparams);
+            linearLayout.addView(ll, layoutParams);
         }
     }
 
@@ -212,11 +235,9 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
                 List<String> urllistia = new ArrayList<>(urls[0]);
                 List<GooglePlaceList> result = new ArrayList<>();
                 for (int counter = 0; counter < urllistia.size(); counter++) {
-                    //dialog.setMessage("Fetching Places Data");
                     String input = GooglePlacesUtility.readGooglePlaces(urllistia.get(counter), null);
                     Gson gson = new Gson();
                     GooglePlaceList places = gson.fromJson(input, GooglePlaceList.class);
-                    //Log.i("PLACES_EXAMPLE", "Number of places found is " + places.getResults().size());
                     result.add(places);
                 }
                 return result;
@@ -241,4 +262,74 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
 
 
     }
+
+    public List<String> generateUrlList(List<String> interestList, Double longitude, Double latitude, int radius, String placesKey) {
+        List<String> urlList = new ArrayList<>();
+        String url;
+        for (String interest : interestList) {
+            switch (interest) {
+                case "Art":
+                    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + latitude + "," + longitude + "&radius=" + radius + "&type=art_gallery" + "&key=" + placesKey;
+                    urlList.add(url);
+                    break;
+                case "Animals":
+                    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + latitude + "," + longitude + "&radius=" + radius + "&type=zoo" + "&key=" + placesKey;
+                    urlList.add(url);
+                    break;
+                case "Books":
+                    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + latitude + "," + longitude + "&radius=" + radius + "&type=library" + "&key=" + placesKey;
+                    urlList.add(url);
+                    break;
+                case "Food":
+                    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + latitude + "," + longitude + "&radius=" + radius + "&type=restaurant" + "&key=" + placesKey;
+                    urlList.add(url);
+                    break;
+                case "History":
+                    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + latitude + "," + longitude + "&radius=" + radius + "&type=museum" + "&key=" + placesKey;
+                    urlList.add(url);
+                    break;
+                case "Music":
+                    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + latitude + "," + longitude + "&radius=" + radius + "&type=bar" + "&key=" + placesKey;
+                    urlList.add(url);
+                    break;
+                case "Nature":
+                    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + latitude + "," + longitude + "&radius=" + radius + "&type=campground" + "&key=" + placesKey;
+                    urlList.add(url);
+                    break;
+                case "Shopping":
+                    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + latitude + "," + longitude + "&radius=" + radius + "&type=shopping_mall" + "&key=" + placesKey;
+                    urlList.add(url);
+                    break;
+                case "Sport":
+                    url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + latitude + "," + longitude + "&radius=" + radius + "&type=bowling_alley" + "&key=" + placesKey;
+                    urlList.add(url);
+                    break;
+            }
+        }
+        return urlList;
+    }
+
+    public void readData(DatabaseReference ref, final OnGetDataListener listener) {
+        listener.onStart();
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onFailure();
+            }
+        });
+
+    }
+
+    interface OnGetDataListener {
+        //make new interface for call back
+        void onSuccess(DataSnapshot dataSnapshot);
+        void onStart();
+        void onFailure();
+    }
+
 }
