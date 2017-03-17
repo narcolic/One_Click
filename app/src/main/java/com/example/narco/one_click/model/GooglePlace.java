@@ -371,4 +371,52 @@ public class GooglePlace implements Serializable {
     //@Key
     private List<Photo> photos;
 
+
+    public OpenHours getOpening_hours() {
+        return opening_hours;
+    }
+
+    public void setOpening_hours(OpenHours opening_hours) {
+        this.opening_hours = opening_hours;
+    }
+
+    //@Key
+    private OpenHours opening_hours;
+
+    public static class OpenHours implements Serializable {
+        //@Key
+        private List<String> exceptional_date;
+
+        public String getOpen_now() {
+            return open_now;
+        }
+
+        public void setOpen_now(String open_now) {
+            this.open_now = open_now;
+        }
+
+        //@Key
+        private String open_now;
+        //@Key
+        private List<String> weekday_text;
+
+        public List<String> getWeekday_text() {
+            return weekday_text;
+        }
+
+        public void setWeekday_text(List<String> weekday_text) {
+            this.weekday_text = weekday_text;
+        }
+
+        public List<String> getExceptional_date() {
+            return exceptional_date;
+        }
+
+        public void setExceptional_date(List<String> exceptional_date) {
+            this.exceptional_date = exceptional_date;
+        }
+
+
+    }
+
 }

@@ -7,9 +7,12 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_new"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <meta-data
@@ -75,12 +78,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.narco.one_click.MainActivity" />
         </activity>
-        <activity android:name=".PlaceDetailActivity" />
+        <activity
+            android:name=".PlaceDetailActivity"
+            android:theme="@style/DrawerTheme" />
         <activity
             android:name="com.example.narco.one_click.LocationTrackerActivity"
-            android:theme="@style/AppTheme.Dark"
-            android:exported="true"/>
-
+            android:exported="true"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name="com.example.narco.one_click.test.PlaceDet"
+            android:exported="true"
+            android:theme="@style/AppTheme.Dark" />
 
 
     </application>

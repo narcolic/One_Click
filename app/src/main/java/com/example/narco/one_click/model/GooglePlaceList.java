@@ -47,7 +47,7 @@ public class GooglePlaceList {
                 presult.add("https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=" + place.getPhotos().get(0).getPhoto_reference() + "&sensor=false&key=AIzaSyD79S9Un0Ti8tDT_el4ko7ItRJz3KapOLA");
             }
             else{
-                presult.add("http://i.imgur.com/CAak2VE.png");
+                presult.add("http://i.imgur.com/dQSoqN3.jpg");
             }
         }
         return presult;

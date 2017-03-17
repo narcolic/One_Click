@@ -46,6 +46,7 @@ dependencies {
     compile 'com.koushikdutta.ion:ion:2.1.9'
     compile 'io.nlopez.smartlocation:library:3.3.1'
     compile 'com.yayandroid:LocationManager:1.1.5'
+    compile 'info.hoang8f:fbutton:1.0.5'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
 }

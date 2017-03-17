@@ -33,6 +33,14 @@
     <string name="music">Music</string>
     <string name="submit">Submit</string>
     <string name="sport">Sport</string>
+    <string name="rating">Rating</string>
+    <string name="open_hours">Open Hours</string>
+    <string name="favorite">Favorite</string>
+    <string name="review">Review</string>
+    <string name="postcard">Postcard</string>
+    <string name="take_me_there">  Go!  </string>
+    <string name="image_of_selected_google_place">Image of selected Google Place</string>
+    <string name="userreviews">User Reviews:</string>
 
 
 </resources>
