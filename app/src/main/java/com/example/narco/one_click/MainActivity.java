@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.example.narco.one_click.Drawer.FavoritesActivity;
 import com.example.narco.one_click.Drawer.PostcardsActivity;
-import com.example.narco.one_click.Drawer.ReviewsActivity;
 import com.example.narco.one_click.Drawer.SettingsActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 .withActionBarDrawerToggleAnimated(true)
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.drawer_favorites).withIcon(FontAwesome.Icon.faw_heart),
-                        new PrimaryDrawerItem().withName(R.string.drawer_my_reviews).withIcon(FontAwesome.Icon.faw_comments),
+                        new PrimaryDrawerItem().withName(R.string.drawer_my_interests).withIcon(FontAwesome.Icon.faw_paper_plane_o),
                         new PrimaryDrawerItem().withName(R.string.drawer_postcards).withIcon(FontAwesome.Icon.faw_camera_retro),
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(FontAwesome.Icon.faw_cog),
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                                     result.closeDrawer();
                                     break;
                                 case 1:
-                                    Intent intent2 = new Intent(MainActivity.this, ReviewsActivity.class);
+                                    Intent intent2 = new Intent(MainActivity.this, InterestsActivity.class);
                                     startActivity(intent2);
                                     result.closeDrawer();
                                     break;
@@ -171,5 +170,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
 
 }

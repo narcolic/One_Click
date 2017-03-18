@@ -131,7 +131,7 @@
             android:weightSum="2">
 
             <info.hoang8f.widget.FButton
-                android:id="@+id/favorite_button"
+                android:id="@+id/fav1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginBottom="7dp"
@@ -144,11 +144,12 @@
                 fbutton:shadowEnabled="true" />
 
             <info.hoang8f.widget.FButton
-                android:id="@+id/postcard_button"
+                android:id="@+id/camera_but"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:text="@string/postcard"
+                android:onClick="takePicture"
                 android:drawableStart="@drawable/ic_camera"
                 android:textColor="@android:color/white"
                 fbutton:buttonColor="@color/fbutton_color_peter_river"

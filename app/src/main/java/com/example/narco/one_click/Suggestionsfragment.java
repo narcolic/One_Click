@@ -59,8 +59,7 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
         interestList = new ArrayList<>();
         latlong = new ArrayList<>();
         nearby = null;
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
             DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference().child(user.getUid());

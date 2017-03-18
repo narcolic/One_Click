@@ -3,7 +3,7 @@ apply plugin: 'com.jakewharton.butterknife'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.example.narco.one_click"
         minSdkVersion 21
@@ -29,23 +29,28 @@ dependencies {
     compile('com.mikepenz:materialdrawer:5.8.2@aar') { //Nav Drawer
         transitive = true
     }
-    //Google Material Icons
-    //FontAwesome
+
     compile 'com.android.support:appcompat-v7:25.3.0'
     compile 'com.android.support:design:25.3.0'
-    compile 'com.jakewharton:butterknife:8.4.0'
-    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+    compile "com.android.support:palette-v7:25.3.0"
     compile 'com.google.android.gms:play-services-auth:10.2.0'
     compile 'com.google.android.gms:play-services-maps:10.2.0'
-    compile 'com.roughike:bottom-bar:2.1.1'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.mikepenz:google-material-typeface:3.0.1.0.original@aar'
-    compile 'com.mikepenz:fontawesome-typeface:4.7.0.0@aar'
+    compile 'com.google.android.gms:play-services-location:10.2.0'
+    compile 'com.google.android.gms:play-services-places:10.2.0'
     compile 'com.google.firebase:firebase-database:10.2.0'
     compile 'com.google.firebase:firebase-auth:10.2.0'
+    compile 'com.google.code.gson:gson:2.7'
+
+    compile 'com.jakewharton:butterknife:8.4.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+    compile 'com.roughike:bottom-bar:2.1.1'
+    compile 'com.mikepenz:google-material-typeface:3.0.1.0.original@aar'
+    compile 'com.mikepenz:fontawesome-typeface:4.7.0.0@aar'
     compile 'com.koushikdutta.ion:ion:2.1.9'
     compile 'io.nlopez.smartlocation:library:3.3.1'
     compile 'com.yayandroid:LocationManager:1.1.5'
+    compile 'com.github.lawloretienne:imagegallery:0.1.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'info.hoang8f:fbutton:1.0.5'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'

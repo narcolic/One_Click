@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +24,16 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC5md7GDFAtZc8HBMxx4Y-kyxS2hxcLM9A" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
 
         <activity
             android:name="com.example.narco.one_click.MainActivity"
@@ -62,13 +72,6 @@
                 android:value="com.example.narco.one_click.MainActivity" />
         </activity>
         <activity
-            android:name="com.example.narco.one_click.Drawer.ReviewsActivity"
-            android:theme="@style/DrawerTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.narco.one_click.MainActivity" />
-        </activity>
-        <activity
             android:name="com.example.narco.one_click.InterestsActivity"
             android:theme="@style/DrawerTheme" />
         <activity
@@ -80,6 +83,7 @@
         </activity>
         <activity
             android:name=".PlaceDetailActivity"
+            android:exported="true"
             android:theme="@style/DrawerTheme" />
         <activity
             android:name="com.example.narco.one_click.LocationTrackerActivity"
