@@ -3,16 +3,22 @@ package com.example.narco.one_click;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.narco.one_click.Drawer.FavoritesActivity;
+import com.example.narco.one_click.Drawer.InfoActivity;
 import com.example.narco.one_click.Drawer.PostcardsActivity;
 import com.example.narco.one_click.Drawer.SettingsActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -24,10 +30,14 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+
 public class MainActivity extends AppCompatActivity {
 
     private Drawer result = null;
     private FirebaseAuth mAuth;
+    FirebaseUser user;
+    private DatabaseReference databaseReference;
 
 
     @Override
@@ -88,6 +98,11 @@ public class MainActivity extends AppCompatActivity {
                                     startActivity(intent4);
                                     result.closeDrawer();
                                     break;
+                                case 5:
+                                    Intent intent5 = new Intent(MainActivity.this, InfoActivity.class);
+                                    startActivity(intent5);
+                                    result.closeDrawer();
+                                    break;
                                 case -1:
                                     mAuth.signOut();
                                     checkLogin(null);
@@ -132,6 +147,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void onRadiusClick(View mView) {
+        AlertDialog.Builder myAlert = new AlertDialog.Builder(this);
+        myAlert.setMessage("SeekBar")
+                .setView(mView)
+                .setTitle("Title")
+                .setIcon(R.drawable.ic_camera)
+                .create();
+        myAlert.show();
+    }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -171,5 +196,61 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menu_2:
+                onRadiusSelected();
+                return true;
+            case R.id.menu_3:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void onRadiusSelected() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.custom_pop, null);
+        Button mLogin = (Button) mView.findViewById(R.id.btnLogin);
+        DiscreteSeekBar discreteSeekBar = (DiscreteSeekBar) mView.findViewById(R.id.discrete1);
+        discreteSeekBar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
+            @Override
+            public int transform(int value) {
+                return value * 100;
+            }
+        });
+
+
+//
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+        mLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                /*if (!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty()) {
+                    Toast.makeText(MainActivity.this,
+                            "Success",
+                            Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(MainActivity.this,
+                            "Fail",
+                            Toast.LENGTH_SHORT).show();
+                }*/
+            }
+        });
+
+
+    }
 }

@@ -1,23 +1,26 @@
 package com.example.narco.one_click.Drawer;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.narco.one_click.PlaceDetailActivity;
 import com.example.narco.one_click.R;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
+import com.example.narco.one_click.model.GooglePlace;
+import com.example.narco.one_click.model.GooglePlaceListSingleItem;
+import com.example.narco.one_click.model.GooglePlacesUtility;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,20 +28,21 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class FavoritesFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks {
+public class FavoritesFragment extends Fragment {
 
+    private GooglePlaceListSingleItem nearby;
     private static final String TAG = "Favorites Fragment";
-    private FirebaseUser user;
-    private List<String> favoriteList;
+    private List<String> favoriteRefList;
     private List<String> favoriteKeyList;
-    private GoogleApiClient mGoogleApiClient;
-    private List<String> favoriteNameList;
     LinearLayout linearLayout;
+    DatabaseReference reference;
 
     public static FavoritesFragment newInstance() {
         return new FavoritesFragment();
@@ -55,76 +59,27 @@ public class FavoritesFragment extends Fragment implements GoogleApiClient.Conne
         View v = inflater.inflate(R.layout.activity_favorites, parent, false);
         getActivity().setTitle(R.string.favorites_menu_title);
         linearLayout = (LinearLayout) v.findViewById(R.id.main_layout);
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        favoriteList = new ArrayList<>();
-        favoriteNameList = new ArrayList<>();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        favoriteRefList = new ArrayList<>();
         favoriteKeyList = new ArrayList<>();
+        nearby = null;
 
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addApi(Places.GEO_DATA_API)
-                .addConnectionCallbacks(this).build();
 
         if (user != null) {
-            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(user.getUid());
+            reference = FirebaseDatabase.getInstance().getReference().child(user.getUid());
             readData(reference, new FavoritesFragment.OnGetDataListener() {
                 @Override
                 public void onSuccess(DataSnapshot dataSnapshot) {
                     Log.d("ONSUCCESS", "Success");
-                    int favoritePositionOnList = 0;
                     for (DataSnapshot postSnapshot : dataSnapshot.child("favorites").getChildren()) {
-                        String favorites = postSnapshot.getValue(String.class);
-                        favoriteList.add(favorites);
+                        String favoritesID = postSnapshot.child("0").getValue(String.class);
+                        favoriteRefList.add(favoritesID);
                         String favoritesKey = postSnapshot.getKey();
                         favoriteKeyList.add(favoritesKey);
                     }
-
-                    //GooglePlaceID to Place Name
-                    for (String favoriteID : favoriteList) {
-                        Places.GeoDataApi.getPlaceById(mGoogleApiClient, favoriteID)
-                                .setResultCallback(new ResultCallback<PlaceBuffer>() {
-                                    @Override
-                                    public void onResult(PlaceBuffer places) {
-                                        if (places.getStatus().isSuccess() && places.getCount() > 0) {
-                                            final Place myPlace = places.get(0);
-                                            Log.i(TAG, "Place found: " + myPlace.getName());
-                                            //favoriteNameList.add(myPlace.getName().toString());
-                                            LinearLayout ll = new LinearLayout(getActivity());
-                                            Button deleteButton = new Button(getActivity());
-                                            deleteButton.setText(R.string.delete_button);
-                                            TextView favoriteNameText = new TextView(getActivity());
-                                            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                                                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                            layoutParams.setMargins(10, 20, 10, 20);
-                                            favoriteNameText.setTextColor(Color.WHITE);
-                                            favoriteNameText.setTextSize(20);
-                                            favoriteNameText.setText(myPlace.getName().toString());
-                                            ll.setOrientation(LinearLayout.HORIZONTAL);
-                                            ll.addView(favoriteNameText);
-                                            ll.addView(deleteButton);
-                                            linearLayout.addView(ll, layoutParams);
-                                        } else {
-                                            Log.e(TAG, "Place not found");
-                                        }
-                                        places.release();
-                                    }
-                                });
-                    }
-
-
-                    /*final int finalFavoriteKey = favoritePositionOnList;
-                    favoriteButton.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-                            if (!isFavorite) {
-                                reference.child("favorites").push().setValue(place.getId());
-                                favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fav_full, 0, 0, 0);
-                                isFavorite = true;
-                            } else {
-                                reference.child("favorites").child(favoriteKeyList.get(finalFavoriteKey)).removeValue();
-                                favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_fav, 0, 0, 0);
-                                isFavorite = false;
-                            }
-                        }
-                    });*/
+                    //GooglePlaceUrl to Place Name
+                    PlacesReadFeed process = new PlacesReadFeed();
+                    process.execute(favoriteRefList);
                 }
 
                 @Override
@@ -139,6 +94,77 @@ public class FavoritesFragment extends Fragment implements GoogleApiClient.Conne
         return v;
     }
 
+    private void SetupFavorites(final GooglePlace myPlace, final DatabaseReference reference, final int finalK) {
+        Log.i(TAG, "Place found: " + myPlace.getName());
+        final RelativeLayout relativeLayout = new RelativeLayout(getActivity());
+        relativeLayout.setId(finalK);
+        ImageView imageView = new ImageView(getActivity());
+        TextView favoriteNameText = new TextView(getActivity());
+        if (!myPlace.getPhotos().isEmpty()) {
+            Ion.with(imageView)
+                    .placeholder(R.drawable.ic_postcard_new)
+                    .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=" + myPlace.getPhotos().get(0).getPhoto_reference() + "&sensor=false&key=AIzaSyD79S9Un0Ti8tDT_el4ko7ItRJz3KapOLA");
+        }else {
+            Ion.with(imageView)
+                    .placeholder(R.drawable.ic_postcard_new)
+                    .load("http://i.imgur.com/dQSoqN3.jpg");
+
+        }
+        imageView.setPadding(2, 2, 2, 2);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageView.setBackgroundResource(R.drawable.shadow);
+        imageView.setMinimumHeight(450);
+        imageView.setMaxHeight(460);
+        imageView.setMinimumWidth(600);
+
+        final Button deleteButton = new Button(getActivity());
+        //deleteButton.setText(R.string.delete_button);
+        deleteButton.setBackgroundResource(R.drawable.ic_delete);
+
+
+        favoriteNameText.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), PlaceDetailActivity.class);
+                i.putExtra("PLACE", myPlace);
+                startActivity(i);
+            }
+        });
+        favoriteNameText.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 20, 10, 20);
+        favoriteNameText.setTextColor(Color.WHITE);
+        favoriteNameText.setTextSize(20);
+        String upToNCharacters = myPlace.getName().toString().substring(0, Math.min(myPlace.getName().length(), 33));
+        favoriteNameText.setText(" " + upToNCharacters);
+
+        RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        rlp1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, imageView.getId());
+        rlp1.setMargins(0, 430, 0, 0);
+
+        RelativeLayout.LayoutParams rlp2 = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        rlp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, imageView.getId());
+        rlp2.setMargins(0, 150, 0, 0);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                reference.child("favorites").child(favoriteKeyList.get(finalK)).removeValue();
+                linearLayout.removeView(relativeLayout);
+            }
+        });
+        //favoriteNameText.setText(myPlace.getName().toString());
+        relativeLayout.addView(imageView);
+        relativeLayout.addView(favoriteNameText, rlp1);
+        relativeLayout.addView(deleteButton, rlp2);
+        linearLayout.addView(relativeLayout, layoutParams);
+    }
 
     public void readData(DatabaseReference ref, final FavoritesFragment.OnGetDataListener listener) {
         listener.onStart();
@@ -157,25 +183,13 @@ public class FavoritesFragment extends Fragment implements GoogleApiClient.Conne
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
     }
 
     interface OnGetDataListener {
@@ -185,6 +199,60 @@ public class FavoritesFragment extends Fragment implements GoogleApiClient.Conne
         void onStart();
 
         void onFailure();
+    }
+
+    protected void reportBack(List<GooglePlaceListSingleItem> nearby) {
+        int index = 0;
+        for (GooglePlaceListSingleItem gpl : nearby) {
+            if (this.nearby == null) {
+                this.nearby = gpl;
+            }
+            //Log.i("PLACES_EXAMPLE", gpl.getResult().get(0).getName());
+            GooglePlace place = gpl.getResult();
+            SetupFavorites(place, reference, index);
+            index++;
+        }
+    }
+
+    private class PlacesReadFeed extends AsyncTask<List<String>, Void, List<GooglePlaceListSingleItem>> {
+        private final ProgressDialog dialog = new ProgressDialog(getActivity());
+
+
+        @SafeVarargs
+        @Override
+        protected final List<GooglePlaceListSingleItem> doInBackground(List<String>... urls) {
+            try {
+                List<String> urllistia = new ArrayList<>(urls[0]);
+                List<GooglePlaceListSingleItem> result = new ArrayList<>();
+                for (int counter = 0; counter < urllistia.size(); counter++) {
+                    String input = GooglePlacesUtility.readGooglePlaces(urllistia.get(counter), null);
+                    Gson gson = new Gson();
+                    GooglePlaceListSingleItem places = gson.fromJson(input, GooglePlaceListSingleItem.class);
+                    //Log.i("PLACES_EXAMPLE", places.getResult().get(0).getName());
+                    result.add(places);
+                }
+                //Log.i("PLACES_EXAMPLE", result.get(0).getPlaceNames().get(0));
+                return result;
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("PLACES_EXAMPLE", e.getMessage());
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            this.dialog.setMessage("Getting favorite list...");
+            this.dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(List<GooglePlaceListSingleItem> places) {
+            this.dialog.dismiss();
+            reportBack(places);
+        }
+
+
     }
 
 }

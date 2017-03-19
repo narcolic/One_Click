@@ -44,7 +44,7 @@
                 android:layout_weight="1"
                 android:contentDescription="@string/image_of_selected_google_place"
                 android:scaleType="fitXY"
-                android:src="@drawable/museum" />
+                android:src="@drawable/placeholder" />
 
             <ImageView
                 android:id="@+id/i2"
@@ -54,7 +54,7 @@
                 android:layout_weight="1"
                 android:contentDescription="@string/image_of_selected_google_place"
                 android:scaleType="fitXY"
-                android:src="@drawable/museum" />
+                android:src="@drawable/placeholder" />
 
             <ImageView
                 android:id="@+id/i3"
@@ -64,7 +64,7 @@
                 android:layout_weight="1"
                 android:contentDescription="@string/image_of_selected_google_place"
                 android:scaleType="fitXY"
-                android:src="@drawable/museum" />
+                android:src="@drawable/placeholder" />
 
         </LinearLayout>
 
@@ -105,7 +105,7 @@
                 android:textSize="16sp" />
 
             <info.hoang8f.widget.FButton
-                android:id="@+id/primary_button"
+                android:id="@+id/go_there"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|end"

@@ -45,6 +45,12 @@
     <string name="load">Load Button</string>
     <string name="delete">Delete Button</string>
     <string name="delete_button">Delete</string>
-
+    <string name="title">Select radius range: </string>
+    <string name="body">Hello World!</string>
+    <string name="nah_button">You Can Change Name!</string>
+    <string name="radius">Radius</string>
+    <string name="budget">Budget</string>
+    <string name="adjust_radius">Adjust Radius:</string>
+    <string name="ok">Ok</string>
 
 </resources>

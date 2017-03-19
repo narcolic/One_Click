@@ -52,6 +52,11 @@ dependencies {
     compile 'com.github.lawloretienne:imagegallery:0.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'info.hoang8f:fbutton:1.0.5'
+    compile 'org.adw.library:discrete-seekbar:1.0.1'
+    compile 'com.vistrav:pop:2.0'
+    compile('com.mikepenz:aboutlibraries:5.9.4@aar') {
+        transitive = true
+    }
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
 }

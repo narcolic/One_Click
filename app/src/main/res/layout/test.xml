@@ -1,189 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/base"
-        android:textSize="25sp" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="250dp"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
-
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/map_on_details"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:layout_weight="0.70"
-            tools:context=".MapsActivity" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight=".40"
-            android:orientation="vertical"
-            android:weightSum="3">
-
-            <ImageView
-                android:id="@+id/i1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:contentDescription="@string/image_of_selected_google_place"
-                android:scaleType="fitXY"
-                android:src="@drawable/museum" />
-
-            <ImageView
-                android:id="@+id/i2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:contentDescription="@string/image_of_selected_google_place"
-                android:scaleType="fitXY"
-                android:src="@drawable/museum" />
-
-            <ImageView
-                android:id="@+id/i3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:contentDescription="@string/image_of_selected_google_place"
-                android:scaleType="fitXY"
-                android:src="@drawable/museum" />
-
-        </LinearLayout>
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".test.PlaceDet">
 
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_margin="5dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:layout_weight="9.0"
-            android:orientation="vertical"
-            android:weightSum="3">
-
-            <TextView
-                android:id="@+id/rating"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:textColor="@color/base"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/openhrs"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:gravity="start"
-                android:textColor="@color/base"
-                android:textSize="16sp" />
-
-            <info.hoang8f.widget.FButton
-                android:id="@+id/primary_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|end"
-                android:layout_margin="5dp"
-                android:drawableStart="@drawable/ic_walk"
-                android:text="@string/take_me_there"
-                android:textColor="@android:color/white"
-                fbutton:buttonColor="@color/fbutton_color_sun_flower"
-                fbutton:shadowEnabled="true" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.1" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:layout_weight="4.8"
-            android:orientation="vertical"
-            android:weightSum="2">
-
-            <info.hoang8f.widget.FButton
-                android:id="@+id/fav1"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginBottom="7dp"
-                android:layout_weight="1"
-                android:text="@string/favorite"
-                android:drawableStart="@drawable/ic_fav"
-                android:drawablePadding="0dp"
-                android:textColor="@android:color/white"
-                fbutton:buttonColor="@color/fbutton_color_peter_river"
-                fbutton:shadowEnabled="true" />
-
-            <info.hoang8f.widget.FButton
-                android:id="@+id/camera_but"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="@string/postcard"
-                android:onClick="takePicture"
-                android:drawableStart="@drawable/ic_camera"
-                android:textColor="@android:color/white"
-                fbutton:buttonColor="@color/fbutton_color_peter_river"
-                fbutton:shadowEnabled="true" />
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-    <LinearLayout
+    <Button
+        android:text="Show Dial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/userreviews"
-            android:textColor="@color/base"
-            android:textSize="18sp" />
-
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/userreviews"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </ScrollView>
-
-    </LinearLayout>
-
-
-</LinearLayout>
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/btnShowDialog" />
+</RelativeLayout>

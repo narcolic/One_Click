@@ -135,9 +135,15 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
 
                 horizontalBoxWithPlaceResults(gpl, relativeLayout);
 
+                LinearLayout linearLayout2 = new LinearLayout(getActivity());
+                LinearLayout.LayoutParams layoutParams2 = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams2.setMargins(0, 50, 0, 0);
+
                 hsv.addView(relativeLayout);
                 ll.addView(hsv, hsvparams);
                 linearLayout.addView(ll, layoutParams);
+                linearLayout.addView(linearLayout2,layoutParams2);
             }
         }
     }
@@ -146,7 +152,7 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
         for (int i = 0; i < gpl.getResults().size(); i++) {
             ImageView imageView = new ImageView(getActivity());
             Ion.with(imageView)
-                    .placeholder(R.drawable.ic_postcard_new)
+                    .placeholder(R.drawable.placeholder)
                     .load(gpl.getPhotoUrl().get(i));
             imageView.setId(i);
             imageView.setPadding(2, 2, 2, 2);
@@ -165,7 +171,7 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
                 }
             });
             TextView textView = new TextView(getActivity());
-            String upToNCharacters = place.getName().substring(0, Math.min(place.getName().length(), 20));
+            String upToNCharacters = place.getName().substring(0, Math.min(place.getName().length(), 18));
             textView.setText("  " + upToNCharacters);
             textView.setTextColor(Color.WHITE);
 
@@ -176,8 +182,8 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
                 RelativeLayout.LayoutParams rlp2 = new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.WRAP_CONTENT,
                         RelativeLayout.LayoutParams.WRAP_CONTENT);
-                rlp2.addRule(RelativeLayout.ALIGN_BOTTOM, imageView.getId());
-                relativeLayout.addView(imageView, rlp1);
+                rlp2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, imageView.getId());
+                relativeLayout.addView(imageView);
                 relativeLayout.addView(textView, rlp2);
             } else {
                 RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams(

@@ -5,16 +5,13 @@
     <item
         android:id="@+id/menu_2"
         android:orderInCategory="2"
-        android:title="Arrow-Icon"
-        app:showAsAction="never" />
+        android:title="@string/radius"
+        app:showAsAction="never"/>
+
     <item
         android:id="@+id/menu_3"
         android:orderInCategory="3"
-        android:title="Hamburger-Icon"
+        android:title="@string/budget"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="ifRoom" />
+
 </menu>
