@@ -75,11 +75,13 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
                         Double loc = postSnapshot.getValue(Double.class);
                         latlong.add(loc);
                     }
-
+                    dataSnapshot.child("radius").getValue();
                     latitude = latlong.get(0);
                     longitude = latlong.get(1);
-
-                    int radius = 5000;
+                    int radius=1000;
+                    if (dataSnapshot.child("radius").exists()) {
+                        radius = dataSnapshot.child("radius").getValue(Integer.class);
+                    }
                     urlList = generateUrlList(interestList, longitude, latitude, radius, placesKey);
                     PlacesReadFeed process = new PlacesReadFeed();
                     process.execute(urlList);
@@ -143,7 +145,7 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
                 hsv.addView(relativeLayout);
                 ll.addView(hsv, hsvparams);
                 linearLayout.addView(ll, layoutParams);
-                linearLayout.addView(linearLayout2,layoutParams2);
+                linearLayout.addView(linearLayout2, layoutParams2);
             }
         }
     }

@@ -6,6 +6,7 @@ import android.support.annotation.IdRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.example.narco.one_click.Drawer.SettingsActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Drawer result = null;
     private FirebaseAuth mAuth;
     FirebaseUser user;
+    int radius;
     private DatabaseReference databaseReference;
 
 
@@ -46,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         checkLogin(user);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
@@ -210,8 +214,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_2:
                 onRadiusSelected();
                 return true;
-            case R.id.menu_3:
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -225,29 +227,19 @@ public class MainActivity extends AppCompatActivity {
         discreteSeekBar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
             public int transform(int value) {
-                return value * 100;
+                radius = value*100;
+                return radius;
             }
         });
-
-
-//
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
         dialog.show();
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                /*if (!mEmail.getText().toString().isEmpty() && !mPassword.getText().toString().isEmpty()) {
-                    Toast.makeText(MainActivity.this,
-                            "Success",
-                            Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                } else {
-                    Toast.makeText(MainActivity.this,
-                            "Fail",
-                            Toast.LENGTH_SHORT).show();
-                }*/
+                Log.e("RADIUS", ""+radius);
+                databaseReference.child(user.getUid()).child("radius").setValue(radius);
+                dialog.dismiss();
             }
         });
 
