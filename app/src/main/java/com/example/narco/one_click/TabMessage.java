@@ -1,7 +1,7 @@
 package com.example.narco.one_click;
 
 
-public class TabMessage {
+class TabMessage {
     public static String get(int menuItemId, boolean isReselection) {
         String message = "Content for ";
 
@@ -18,7 +18,7 @@ public class TabMessage {
         }
 
         if (isReselection) {
-            message += " WAS RESELECTED! YAY!";
+            message += "";
         }
 
         return message;

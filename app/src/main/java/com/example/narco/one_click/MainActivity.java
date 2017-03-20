@@ -19,8 +19,11 @@ import com.example.narco.one_click.Drawer.PostcardsActivity;
 import com.example.narco.one_click.Drawer.SettingsActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -55,9 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
-        if (user != null) {
-            getSupportActionBar().setTitle(user.getEmail());
-        }
+        getSupportActionBar().setTitle("One Click");
+
 
         result = new DrawerBuilder(this)
                 //this layout have to contain child layouts
@@ -129,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
                 if (tabId == R.id.tab_map) {
                     Mapfragment f = new Mapfragment();
                     getSupportFragmentManager().beginTransaction().replace(R.id.frame, f).commit();
-
                     result.closeDrawer();
                 } else if (tabId == R.id.tab_suggestions) {
                     Suggestionsfragment f = new Suggestionsfragment();
@@ -151,17 +152,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void onRadiusClick(View mView) {
-        AlertDialog.Builder myAlert = new AlertDialog.Builder(this);
-        myAlert.setMessage("SeekBar")
-                .setView(mView)
-                .setTitle("Title")
-                .setIcon(R.drawable.ic_camera)
-                .create();
-        myAlert.show();
-    }
-
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //add the values which need to be saved from the drawer to the bundle
@@ -179,10 +169,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    boolean checkLogin(FirebaseUser user) {
+    void checkLogin(FirebaseUser user) {
         // Check login status
         if (user == null) {
-
             // user is not logged in redirect him to Login Activity
             Intent i = new Intent(MainActivity.this, LoginActivity.class);
 
@@ -194,10 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Staring Login Activity
             MainActivity.this.startActivity(i);
-
-            return true;
         }
-        return false;
     }
 
     @Override
@@ -224,10 +210,22 @@ public class MainActivity extends AppCompatActivity {
         View mView = getLayoutInflater().inflate(R.layout.custom_pop, null);
         Button mLogin = (Button) mView.findViewById(R.id.btnLogin);
         DiscreteSeekBar discreteSeekBar = (DiscreteSeekBar) mView.findViewById(R.id.discrete1);
+        databaseReference.child(user.getUid()).child("radius").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                radius = dataSnapshot.getValue(Integer.class);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+        discreteSeekBar.setProgress(radius / 100);
         discreteSeekBar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
             public int transform(int value) {
-                radius = value*100;
+                radius = value * 100;
                 return radius;
             }
         });
@@ -237,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.e("RADIUS", ""+radius);
+                Log.e("RADIUS", "" + radius);
                 databaseReference.child(user.getUid()).child("radius").setValue(radius);
                 dialog.dismiss();
             }

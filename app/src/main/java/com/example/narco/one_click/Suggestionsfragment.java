@@ -78,9 +78,11 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
                     dataSnapshot.child("radius").getValue();
                     latitude = latlong.get(0);
                     longitude = latlong.get(1);
-                    int radius=1000;
+                    int radius;
                     if (dataSnapshot.child("radius").exists()) {
                         radius = dataSnapshot.child("radius").getValue(Integer.class);
+                    }else{
+                        radius=1500;
                     }
                     urlList = generateUrlList(interestList, longitude, latitude, radius, placesKey);
                     PlacesReadFeed process = new PlacesReadFeed();
@@ -178,9 +180,6 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
             textView.setTextColor(Color.WHITE);
 
             if (i == 0) {
-                RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams(
-                        RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
                 RelativeLayout.LayoutParams rlp2 = new RelativeLayout.LayoutParams(
                         RelativeLayout.LayoutParams.WRAP_CONTENT,
                         RelativeLayout.LayoutParams.WRAP_CONTENT);

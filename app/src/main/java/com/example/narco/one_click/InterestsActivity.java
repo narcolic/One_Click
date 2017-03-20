@@ -76,7 +76,7 @@ public class InterestsActivity extends AppCompatActivity {
 
         if (user != null) {
             DatabaseReference ref1 = databaseReference.child(user.getUid());
-            readData(ref1, new Suggestionsfragment.OnGetDataListener() {
+            readData(ref1, new InterestsActivity.OnGetDataListener() {
                 @Override
                 public void onSuccess(DataSnapshot dataSnapshot) {
                     Log.d("ONSUCCESS", "Success");
@@ -138,6 +138,7 @@ public class InterestsActivity extends AppCompatActivity {
 
     private void saveUserInterests() {
         if (user != null) {
+            databaseReference.child(user.getUid()).child("radius").setValue(1500);
             databaseReference.child(user.getUid()).child("interest").setValue(null);
             databaseReference.child(user.getUid()).child("interest").setValue(finalInterestsList);
         }
@@ -222,7 +223,7 @@ public class InterestsActivity extends AppCompatActivity {
     }
 
 
-    public void readData(DatabaseReference ref, final Suggestionsfragment.OnGetDataListener listener) {
+    public void readData(DatabaseReference ref, final InterestsActivity.OnGetDataListener listener) {
         listener.onStart();
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

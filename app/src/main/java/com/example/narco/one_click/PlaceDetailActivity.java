@@ -211,6 +211,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements OnMapReady
                     final List<String> placeRequestAndPlaceID = new ArrayList<String>();
                     placeRequestAndPlaceID.add(placeUrlBuyReference);
                     placeRequestAndPlaceID.add(place.getPlace_id());
+                    placeRequestAndPlaceID.add("false");
                     //Check if place already in favorite list fill heart button
                     int index = 0;
                     for (String placeId : favoriteIDList) {
@@ -273,25 +274,29 @@ public class PlaceDetailActivity extends AppCompatActivity implements OnMapReady
                             image1.setMinimumHeight(450);
                             image1.setMinimumWidth(600);
                         }
-                        if (!place.getPhotos().get(1).getPhoto_reference().isEmpty()) {
-                            ImageView image2 = (ImageView) findViewById(R.id.i2);
-                            Ion.with(image2)
-                                    .placeholder(R.drawable.ic_postcard_new)
-                                    .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=" + place.getPhotos().get(1).getPhoto_reference() + "&sensor=false&key=AIzaSyD79S9Un0Ti8tDT_el4ko7ItRJz3KapOLA");
-                            image2.setScaleType(ImageView.ScaleType.FIT_XY);
-                            image2.setBackgroundResource(R.drawable.shadow);
-                            image2.setMinimumHeight(450);
-                            image2.setMinimumWidth(600);
+                        if (place.getPhotos().size() > 1) {
+                            if (!place.getPhotos().get(1).getPhoto_reference().isEmpty()) {
+                                ImageView image2 = (ImageView) findViewById(R.id.i2);
+                                Ion.with(image2)
+                                        .placeholder(R.drawable.ic_postcard_new)
+                                        .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=" + place.getPhotos().get(1).getPhoto_reference() + "&sensor=false&key=AIzaSyD79S9Un0Ti8tDT_el4ko7ItRJz3KapOLA");
+                                image2.setScaleType(ImageView.ScaleType.FIT_XY);
+                                image2.setBackgroundResource(R.drawable.shadow);
+                                image2.setMinimumHeight(450);
+                                image2.setMinimumWidth(600);
+                            }
                         }
-                        if (!place.getPhotos().get(2).getPhoto_reference().isEmpty()) {
-                            ImageView image3 = (ImageView) findViewById(R.id.i3);
-                            Ion.with(image3)
-                                    .placeholder(R.drawable.ic_postcard_new)
-                                    .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=" + place.getPhotos().get(2).getPhoto_reference() + "&sensor=false&key=AIzaSyD79S9Un0Ti8tDT_el4ko7ItRJz3KapOLA");
-                            image3.setScaleType(ImageView.ScaleType.FIT_XY);
-                            image3.setBackgroundResource(R.drawable.shadow);
-                            image3.setMinimumHeight(450);
-                            image3.setMinimumWidth(600);
+                        if (place.getPhotos().size() > 2) {
+                            if (!place.getPhotos().get(2).getPhoto_reference().isEmpty()) {
+                                ImageView image3 = (ImageView) findViewById(R.id.i3);
+                                Ion.with(image3)
+                                        .placeholder(R.drawable.ic_postcard_new)
+                                        .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=" + place.getPhotos().get(2).getPhoto_reference() + "&sensor=false&key=AIzaSyD79S9Un0Ti8tDT_el4ko7ItRJz3KapOLA");
+                                image3.setScaleType(ImageView.ScaleType.FIT_XY);
+                                image3.setBackgroundResource(R.drawable.shadow);
+                                image3.setMinimumHeight(450);
+                                image3.setMinimumWidth(600);
+                            }
                         }
                     }
 
@@ -304,7 +309,7 @@ public class PlaceDetailActivity extends AppCompatActivity implements OnMapReady
                     goButton.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
                             Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                                    Uri.parse("http://maps.google.com/maps?saddr="+userLatitude+","+userLongitude+"&daddr="+latitude+","+longitude));
+                                    Uri.parse("http://maps.google.com/maps?saddr=" + userLatitude + "," + userLongitude + "&daddr=" + latitude + "," + longitude));
                             startActivity(intent);
                         }
                     });

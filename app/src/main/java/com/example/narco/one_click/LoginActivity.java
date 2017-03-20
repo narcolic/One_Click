@@ -36,8 +36,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-import java.util.concurrent.Callable;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -162,19 +160,19 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancel() {
-                        handleSignInResult(null);
+                        handleSignInResult();
                     }
 
                     @Override
                     public void onError(FacebookException error) {
                         Log.d(LoginActivity.class.getCanonicalName(), error.getMessage());
-                        handleSignInResult(null);
+                        handleSignInResult();
                     }
                 }
         );
     }
 
-    private void handleSignInResult(Callable<Void> callable) {
+    private void handleSignInResult() {
     }
 
     public void login() {
@@ -226,7 +224,6 @@ public class LoginActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
-                final GoogleApiClient client = mGoogleApiClient;
                 GoogleSignInAccount acct = result.getSignInAccount();
                 firebaseAuthWithGoogle(acct);
             } else {
@@ -315,13 +312,6 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
 
-        _loginButton.setEnabled(true);
-    }
-
-    public void onIncorrectUsernamePass() {
-        Toast.makeText(getApplicationContext(),
-                "Username/Password is incorrect",
-                Toast.LENGTH_LONG).show();
         _loginButton.setEnabled(true);
     }
 

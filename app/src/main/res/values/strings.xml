@@ -50,7 +50,8 @@
     <string name="nah_button">You Can Change Name!</string>
     <string name="radius">Radius</string>
     <string name="budget">Budget</string>
-    <string name="adjust_radius">Adjust Radius:</string>
+    <string name="adjust_radius">Adjust Range Radius(m):</string>
     <string name="ok">Ok</string>
+    <string name="Avatar_desc">avatar</string>
 
 </resources>

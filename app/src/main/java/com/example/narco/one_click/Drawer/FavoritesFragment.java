@@ -33,6 +33,7 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class FavoritesFragment extends Fragment {
@@ -41,6 +42,7 @@ public class FavoritesFragment extends Fragment {
     private static final String TAG = "Favorites Fragment";
     private List<String> favoriteRefList;
     private List<String> favoriteKeyList;
+    private List<String> isViewedList;
     LinearLayout linearLayout;
     DatabaseReference reference;
 
@@ -62,6 +64,7 @@ public class FavoritesFragment extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         favoriteRefList = new ArrayList<>();
         favoriteKeyList = new ArrayList<>();
+        isViewedList = new ArrayList<>();
         nearby = null;
 
 
@@ -74,6 +77,8 @@ public class FavoritesFragment extends Fragment {
                     for (DataSnapshot postSnapshot : dataSnapshot.child("favorites").getChildren()) {
                         String favoritesID = postSnapshot.child("0").getValue(String.class);
                         favoriteRefList.add(favoritesID);
+                        String isViewed = postSnapshot.child("2").getValue(String.class);
+                        isViewedList.add(isViewed);
                         String favoritesKey = postSnapshot.getKey();
                         favoriteKeyList.add(favoritesKey);
                     }
@@ -104,11 +109,10 @@ public class FavoritesFragment extends Fragment {
             Ion.with(imageView)
                     .placeholder(R.drawable.ic_postcard_new)
                     .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=500&photoreference=" + myPlace.getPhotos().get(0).getPhoto_reference() + "&sensor=false&key=AIzaSyD79S9Un0Ti8tDT_el4ko7ItRJz3KapOLA");
-        }else {
+        } else {
             Ion.with(imageView)
                     .placeholder(R.drawable.ic_postcard_new)
                     .load("http://i.imgur.com/dQSoqN3.jpg");
-
         }
         imageView.setPadding(2, 2, 2, 2);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -116,10 +120,25 @@ public class FavoritesFragment extends Fragment {
         imageView.setMinimumHeight(450);
         imageView.setMaxHeight(460);
         imageView.setMinimumWidth(600);
+        imageView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), PlaceDetailActivity.class);
+                i.putExtra("PLACE", myPlace);
+                startActivity(i);
+            }
+        });
 
         final Button deleteButton = new Button(getActivity());
-        //deleteButton.setText(R.string.delete_button);
         deleteButton.setBackgroundResource(R.drawable.ic_delete);
+        final Button visitedButton = new Button(getActivity());
+        if (Objects.equals(isViewedList.get(finalK), "true")){
+            visitedButton.setBackgroundResource(R.drawable.ic_visited);
+        }else{
+            visitedButton.setBackgroundResource(R.drawable.ic_not_visited);
+        }
+
 
 
         favoriteNameText.setOnClickListener(new View.OnClickListener() {
@@ -134,36 +153,57 @@ public class FavoritesFragment extends Fragment {
         favoriteNameText.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
+        favoriteNameText.setTextColor(Color.WHITE);
+        favoriteNameText.setTextSize(20);
+        String upToNCharacters = myPlace.getName().substring(0, Math.min(myPlace.getName().length(), 35));
+        favoriteNameText.setText(" " + upToNCharacters);
+
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 20, 10, 20);
-        favoriteNameText.setTextColor(Color.WHITE);
-        favoriteNameText.setTextSize(20);
-        String upToNCharacters = myPlace.getName().toString().substring(0, Math.min(myPlace.getName().length(), 33));
-        favoriteNameText.setText(" " + upToNCharacters);
+        LinearLayout.LayoutParams layoutImageParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutImageParams.setMargins(0,0,200,0);
+        LinearLayout.LayoutParams layoutButtonParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutButtonParams.setMargins(0,150,0,0);
 
-        RelativeLayout.LayoutParams rlp1 = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        rlp1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, imageView.getId());
-        rlp1.setMargins(0, 430, 0, 0);
 
-        RelativeLayout.LayoutParams rlp2 = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        rlp2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, imageView.getId());
-        rlp2.setMargins(0, 150, 0, 0);
+        LinearLayout layoutImage = new LinearLayout(getActivity());
+        layoutImage.addView(imageView,layoutImageParams);
+        LinearLayout layoutButtons = new LinearLayout(getActivity());
+        layoutButtons.setOrientation(LinearLayout.HORIZONTAL);
+        layoutButtons.addView(visitedButton,layoutButtonParams);
+        layoutButtons.addView(deleteButton,layoutButtonParams);
+        final LinearLayout layoutImageText = new LinearLayout(getActivity());
+        layoutImageText.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout layoutImageButtons = new LinearLayout(getActivity());
+        layoutImageButtons.setOrientation(LinearLayout.HORIZONTAL);
+        layoutImageButtons.addView(layoutImage);
+        layoutImageButtons.addView(layoutButtons);
+        layoutImageText.addView(layoutImageButtons);
+        layoutImageText.addView(favoriteNameText);
+
+
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 reference.child("favorites").child(favoriteKeyList.get(finalK)).removeValue();
-                linearLayout.removeView(relativeLayout);
+                linearLayout.removeView(layoutImageText);
             }
         });
-        //favoriteNameText.setText(myPlace.getName().toString());
-        relativeLayout.addView(imageView);
-        relativeLayout.addView(favoriteNameText, rlp1);
-        relativeLayout.addView(deleteButton, rlp2);
-        linearLayout.addView(relativeLayout, layoutParams);
+        visitedButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (Objects.equals(isViewedList.get(finalK), "false")) {
+                    reference.child("favorites").child(favoriteKeyList.get(finalK)).child("2").setValue("true");
+                    visitedButton.setBackgroundResource(R.drawable.ic_visited);
+                } else {
+                    reference.child("favorites").child(favoriteKeyList.get(finalK)).child("2").setValue("false");
+                    visitedButton.setBackgroundResource(R.drawable.ic_not_visited);
+                }
+
+            }
+        });
+        linearLayout.addView(layoutImageText, layoutParams);
     }
 
     public void readData(DatabaseReference ref, final FavoritesFragment.OnGetDataListener listener) {
