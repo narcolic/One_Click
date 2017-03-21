@@ -95,10 +95,6 @@ public class Makemydayfragment extends Fragment {
                 public void onSuccess(DataSnapshot dataSnapshot) {
                     Log.d("ONSUCCESS", "Success");
                     //Get User Current Location
-                    for (DataSnapshot postSnapshot : dataSnapshot.child("location").getChildren()) {
-                        Double loc = postSnapshot.getValue(Double.class);
-                        userLocation.setLatitude(loc);
-                    }
                     userLocation.setLatitude((Double) dataSnapshot.child("location").child("0").getValue());
                     userLocation.setLongitude((Double) dataSnapshot.child("location").child("1").getValue());
                     Log.e("USER LOC", "" + userLocation.getLatitude());

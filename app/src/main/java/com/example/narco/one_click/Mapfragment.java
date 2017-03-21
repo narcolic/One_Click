@@ -2,6 +2,7 @@ package com.example.narco.one_click;
 
 
 import android.app.ProgressDialog;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -36,11 +38,11 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class Mapfragment extends SupportMapFragment implements OnMapReadyCallback,GoogleMap.OnMarkerClickListener {
+public class Mapfragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
     private static final String LOC = "LOCATION";
     private GeoRssLocation location;
-    //private GoogleMap googleMap;
     private GooglePlaceList nearbyGooglePlaceList;
+    GoogleMap googleMap;
     LinearLayout linearLayout;
     private HashMap<Marker, GooglePlace> nearby;
     Double latitude;
@@ -48,13 +50,15 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
     private List<String> interestList;
     private List<Double> latlong;
     List<String> urlList;
+    Location userLocation;
+    private static GoogleMap mMap;
+    FirebaseUser user;
+    String placesKey;
+    private Marker itemMarker;
 
     public Mapfragment() {
         super();
         location = new GeoRssLocation();
-        // location of Aston University
-        location.setLat(52.487144);
-        location.setLng(-1.886977);
     }
 
     @Override
@@ -67,18 +71,23 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, parent, savedInstanceState);
-        final String placesKey = this.getResources().getString(R.string.places_key);
+        placesKey = this.getResources().getString(R.string.places_key);
         interestList = new ArrayList<>();
         latlong = new ArrayList<>();
+        userLocation = new Location("");
         nearbyGooglePlaceList = null;
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
-        //googleMap = getMap();
-        //googleMap.setOnMarkerClickListener(this);
-        //placePin(item, true);
-        //googleMap.setMyLocationEnabled(true);
-        //googleMap.getUiSettings().setZoomControlsEnabled(true);
-        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(item.getLocation().getLatLon(), 9));
+
+        this.getMapAsync(this);
+        return v;
+    }
+
+    @Override
+    public void onMapReady(final GoogleMap googleMap) {
+        mMap = googleMap;
+        UiSettings UiSettings = googleMap.getUiSettings();
+        UiSettings.setZoomControlsEnabled(true);
 
         if (user != null) {
             DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference().child(user.getUid());
@@ -86,26 +95,11 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
                 @Override
                 public void onSuccess(DataSnapshot dataSnapshot) {
                     Log.d("ONSUCCESS", "Success");
-                    for (DataSnapshot postSnapshot : dataSnapshot.child("interest").getChildren()) {
-                        String interests = postSnapshot.getValue(String.class);
-                        interestList.add(interests);
-                    }
-                    for (DataSnapshot postSnapshot : dataSnapshot.child("location").getChildren()) {
-                        Double loc = postSnapshot.getValue(Double.class);
-                        latlong.add(loc);
-                    }
-                    dataSnapshot.child("radius").getValue();
-                    latitude = latlong.get(0);
-                    longitude = latlong.get(1);
-                    int radius;
-                    if (dataSnapshot.child("radius").exists()) {
-                        radius = dataSnapshot.child("radius").getValue(Integer.class);
-                    }else{
-                        radius=1500;
-                    }
-                    urlList = generateUrlList(interestList, longitude, latitude, radius, placesKey);
-                    PlacesReadFeed process = new PlacesReadFeed();
-                    process.execute(urlList);
+                    location.setLat((Double) dataSnapshot.child("location").child("0").getValue());
+                    location.setLng((Double) dataSnapshot.child("location").child("1").getValue());
+                    googleMap.getUiSettings().setZoomControlsEnabled(true);
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.getLatLon(), 17));
+                    createMarker();
                 }
 
                 @Override
@@ -121,23 +115,54 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
                 }
             });
         }
-
-        this.getMapAsync(this);
-        return v;
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        googleMap.getUiSettings().setZoomControlsEnabled(true);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.getLatLon(), 9));
-    }
-
-    private Marker createMarker(LatLng ll, String title, String description, float hue) {
-        Marker marker = googleMap.addMarker(new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(hue)));
+    private void createMarker() {
+        /*Marker marker = googleMap.addMarker(new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(hue)));
         marker.setTitle(title);
-        marker.setSnippet(description);
+        marker.setSnippet(description);*/
 
-        return marker;
+        if (user != null) {
+            DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference().child(user.getUid());
+            readData(ref1, new Mapfragment.OnGetDataListener() {
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+
+                    for (DataSnapshot postSnapshot : dataSnapshot.child("interest").getChildren()) {
+                        String interests = postSnapshot.getValue(String.class);
+                        interestList.add(interests);
+                    }
+                    for (DataSnapshot postSnapshot : dataSnapshot.child("location").getChildren()) {
+                        Double loc = postSnapshot.getValue(Double.class);
+                        latlong.add(loc);
+                    }
+
+                    latitude = (Double) dataSnapshot.child("location").child("0").getValue();
+                    longitude = (Double) dataSnapshot.child("location").child("1").getValue();
+                    int radius;
+                    if (dataSnapshot.child("radius").exists()) {
+                        radius = dataSnapshot.child("radius").getValue(Integer.class);
+                    } else {
+                        radius = 1500;
+                    }
+                    urlList = generateUrlList(interestList, longitude, latitude, radius, placesKey);
+                    PlacesReadFeed process = new PlacesReadFeed();
+                    process.execute(urlList);
+                }
+
+                @Override
+                public void onStart() {
+                    //Whatever you want to do on start
+                    Log.d("ONSTART", "Started2");
+                }
+
+                @Override
+                public void onFailure() {
+                    //Whatever you want to do in case of failure
+                    Log.d("ONFAILURE", "Failure2");
+                }
+            });
+        }
     }
 
     @Override
@@ -154,11 +179,15 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
         protected final List<GooglePlaceList> doInBackground(List<String>... urls) {
             try {
                 List<String> urllistia = new ArrayList<>(urls[0]);
+                Log.d("ONSUCCESS1", "" + urllistia.size());
+                Log.d("ONSUCCESS1", "" + urllistia.get(0));
                 List<GooglePlaceList> result = new ArrayList<>();
                 for (int counter = 0; counter < urllistia.size(); counter++) {
                     String input = GooglePlacesUtility.readGooglePlaces(urllistia.get(counter), null);
                     Gson gson = new Gson();
                     GooglePlaceList googlePlaceList = gson.fromJson(input, GooglePlaceList.class);
+                    //Log.d("ONSUCCESS1", ""+googlePlaceList.getResults().toString());
+                    Log.d("ONSUCCESS1", "" + googlePlaceList.getResults().size());
                     result.add(googlePlaceList);
                 }
                 return result;
@@ -176,32 +205,37 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
         }
 
         @Override
-        protected void onPostExecute(List<GooglePlaceList> places) {
+        protected void onPostExecute(List<GooglePlaceList> googlePlaceList) {
             this.dialog.dismiss();
-            reportBack(places);
+            reportBack(googlePlaceList);
         }
 
 
     }
+
     protected void reportBack(List<GooglePlaceList> nearbyGooglePlaceList) {
-        for (GooglePlaceList gpl :  nearbyGooglePlaceList) {
+        for (GooglePlaceList gpl : nearbyGooglePlaceList) {
             if (this.nearbyGooglePlaceList == null) {
                 this.nearbyGooglePlaceList = gpl;
 
             } else {
                 this.nearbyGooglePlaceList.getResults().addAll(gpl.getResults());
             }
+
             for (GooglePlace place : gpl.getResults()) {
                 String name = place.getName();
+                Log.d("ONSUCCESS", "" + name);
                 List<String> types = place.getTypes();
                 GooglePlace.Geometry geometry = place.getGeometry();
                 if (geometry != null) {
                     GooglePlace.Geometry.Location location = geometry.getLocation();
                     if (location != null) {
+                        mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(location.getLat(), location.getLng()))
+                                .title(name)
+                                .snippet(types.toString())
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
 
-                        nearby.put(createMarker(new LatLng(location.getLat(), location.getLng()),
-                                types.toString(), name, BitmapDescriptorFactory.HUE_BLUE),
-                                place);
                     }
                 }
             }
