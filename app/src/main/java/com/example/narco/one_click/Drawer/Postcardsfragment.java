@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
@@ -49,11 +50,13 @@ public class Postcardsfragment extends Fragment implements ImageGalleryAdapter.I
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.test2, parent, false);
         getActivity().setTitle(R.string.postcards_menu_title);
+        ButterKnife.bind(getActivity());
 
         ImageGalleryActivity.setImageThumbnailLoader(this);
         ImageGalleryFragment.setImageThumbnailLoader(this);
         FullScreenImageGalleryActivity.setFullScreenImageLoader(this);
 
+        paletteColorType = PaletteColorType.VIBRANT;
         return v;
     }
 

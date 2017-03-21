@@ -67,6 +67,7 @@
         </activity>
         <activity
             android:name="com.example.narco.one_click.Drawer.PostcardsActivity"
+            android:exported="true"
             android:theme="@style/DrawerTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -92,10 +93,6 @@
             android:theme="@style/AppTheme.Dark" />
         <activity
             android:name="com.example.narco.one_click.Drawer.InfoActivity"
-            android:exported="true"
-            android:theme="@style/AppTheme.Dark" />
-        <activity
-            android:name="com.example.narco.one_click.test.PlaceDet"
             android:exported="true"
             android:theme="@style/AppTheme.Dark" />
 

@@ -67,26 +67,28 @@ public class Suggestionsfragment extends Fragment implements AdapterView.OnItemC
                 @Override
                 public void onSuccess(DataSnapshot dataSnapshot) {
                     Log.d("ONSUCCESS", "Success");
-                    for (DataSnapshot postSnapshot : dataSnapshot.child("interest").getChildren()) {
-                        String interests = postSnapshot.getValue(String.class);
-                        interestList.add(interests);
+                    if (dataSnapshot.child("location").exists()) {
+                        for (DataSnapshot postSnapshot : dataSnapshot.child("interest").getChildren()) {
+                            String interests = postSnapshot.getValue(String.class);
+                            interestList.add(interests);
+                        }
+                        for (DataSnapshot postSnapshot : dataSnapshot.child("location").getChildren()) {
+                            Double loc = postSnapshot.getValue(Double.class);
+                            latlong.add(loc);
+                        }
+                        dataSnapshot.child("radius").getValue();
+                        latitude = latlong.get(0);
+                        longitude = latlong.get(1);
+                        int radius;
+                        if (dataSnapshot.child("radius").exists()) {
+                            radius = dataSnapshot.child("radius").getValue(Integer.class);
+                        } else {
+                            radius = 1500;
+                        }
+                        urlList = generateUrlList(interestList, longitude, latitude, radius, placesKey);
+                        PlacesReadFeed process = new PlacesReadFeed();
+                        process.execute(urlList);
                     }
-                    for (DataSnapshot postSnapshot : dataSnapshot.child("location").getChildren()) {
-                        Double loc = postSnapshot.getValue(Double.class);
-                        latlong.add(loc);
-                    }
-                    dataSnapshot.child("radius").getValue();
-                    latitude = latlong.get(0);
-                    longitude = latlong.get(1);
-                    int radius;
-                    if (dataSnapshot.child("radius").exists()) {
-                        radius = dataSnapshot.child("radius").getValue(Integer.class);
-                    }else{
-                        radius=1500;
-                    }
-                    urlList = generateUrlList(interestList, longitude, latitude, radius, placesKey);
-                    PlacesReadFeed process = new PlacesReadFeed();
-                    process.execute(urlList);
                 }
 
                 @Override

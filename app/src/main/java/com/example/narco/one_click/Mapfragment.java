@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.example.narco.one_click.model.GeoRssLocation;
 import com.example.narco.one_click.model.GooglePlace;
@@ -34,17 +33,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
 public class Mapfragment extends SupportMapFragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
-    private static final String LOC = "LOCATION";
     private GeoRssLocation location;
     private GooglePlaceList nearbyGooglePlaceList;
-    GoogleMap googleMap;
-    LinearLayout linearLayout;
-    private HashMap<Marker, GooglePlace> nearby;
     Double latitude;
     Double longitude;
     private List<String> interestList;
@@ -54,7 +48,6 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
     private static GoogleMap mMap;
     FirebaseUser user;
     String placesKey;
-    private Marker itemMarker;
 
     public Mapfragment() {
         super();
@@ -95,11 +88,13 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
                 @Override
                 public void onSuccess(DataSnapshot dataSnapshot) {
                     Log.d("ONSUCCESS", "Success");
-                    location.setLat((Double) dataSnapshot.child("location").child("0").getValue());
-                    location.setLng((Double) dataSnapshot.child("location").child("1").getValue());
-                    googleMap.getUiSettings().setZoomControlsEnabled(true);
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.getLatLon(), 17));
-                    createMarker();
+                    if (dataSnapshot.child("location").exists()) {
+                        location.setLat((Double) dataSnapshot.child("location").child("0").getValue());
+                        location.setLng((Double) dataSnapshot.child("location").child("1").getValue());
+                        googleMap.getUiSettings().setZoomControlsEnabled(true);
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location.getLatLon(), 17));
+                        createMarker();
+                    }
                 }
 
                 @Override
@@ -118,9 +113,6 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
     }
 
     private void createMarker() {
-        /*Marker marker = googleMap.addMarker(new MarkerOptions().position(ll).icon(BitmapDescriptorFactory.defaultMarker(hue)));
-        marker.setTitle(title);
-        marker.setSnippet(description);*/
 
         if (user != null) {
             DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference().child(user.getUid());
@@ -200,7 +192,7 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
 
         @Override
         protected void onPreExecute() {
-            this.dialog.setMessage("Getting nearbyGooglePlaceList places...");
+            this.dialog.setMessage("Loading nearby places...");
             this.dialog.show();
         }
 
@@ -222,10 +214,12 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
                 this.nearbyGooglePlaceList.getResults().addAll(gpl.getResults());
             }
 
-            for (GooglePlace place : gpl.getResults()) {
-                String name = place.getName();
-                Log.d("ONSUCCESS", "" + name);
-                List<String> types = place.getTypes();
+            for (final GooglePlace place : gpl.getResults()) {
+                final String name = place.getName();
+
+                //List<String> types = place.getTypes();
+                String address = place.getVicinity();
+                //Log.d("ONSUCCESS", "" + address);
                 GooglePlace.Geometry geometry = place.getGeometry();
                 if (geometry != null) {
                     GooglePlace.Geometry.Location location = geometry.getLocation();
@@ -233,9 +227,8 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
                         mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(location.getLat(), location.getLng()))
                                 .title(name)
-                                .snippet(types.toString())
+                                .snippet(address)
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-
                     }
                 }
             }

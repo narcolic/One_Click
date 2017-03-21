@@ -95,28 +95,30 @@ public class Makemydayfragment extends Fragment {
                 public void onSuccess(DataSnapshot dataSnapshot) {
                     Log.d("ONSUCCESS", "Success");
                     //Get User Current Location
-                    userLocation.setLatitude((Double) dataSnapshot.child("location").child("0").getValue());
-                    userLocation.setLongitude((Double) dataSnapshot.child("location").child("1").getValue());
-                    Log.e("USER LOC", "" + userLocation.getLatitude());
+                    if (dataSnapshot.child("location").exists()) {
+                        userLocation.setLatitude((Double) dataSnapshot.child("location").child("0").getValue());
+                        userLocation.setLongitude((Double) dataSnapshot.child("location").child("1").getValue());
+                        Log.e("USER LOC", "" + userLocation.getLatitude());
 
-                    //Get Radius
-                    if (dataSnapshot.child("radius").exists()) {
-                        radius = dataSnapshot.child("radius").getValue(Integer.class);
-                    }
-                    //Get Favorite items Ref ID
-                    for (DataSnapshot postSnapshot : dataSnapshot.child("favorites").getChildren()) {
-                        String favoritesID = postSnapshot.child("0").getValue(String.class);
-                        favoriteRefList.add(favoritesID);
-                        String isViewed = postSnapshot.child("2").getValue(String.class);
-                        isViewedList.add(isViewed);
-                        String favoritesKey = postSnapshot.getKey();
-                        favoriteKeyList.add(favoritesKey);
-                    }
+                        //Get Radius
+                        if (dataSnapshot.child("radius").exists()) {
+                            radius = dataSnapshot.child("radius").getValue(Integer.class);
+                        }
+                        //Get Favorite items Ref ID
+                        for (DataSnapshot postSnapshot : dataSnapshot.child("favorites").getChildren()) {
+                            String favoritesID = postSnapshot.child("0").getValue(String.class);
+                            favoriteRefList.add(favoritesID);
+                            String isViewed = postSnapshot.child("2").getValue(String.class);
+                            isViewedList.add(isViewed);
+                            String favoritesKey = postSnapshot.getKey();
+                            favoriteKeyList.add(favoritesKey);
+                        }
 
-                    //RefID to Google Place
-                    if (!favoriteRefList.isEmpty()) {
-                        Makemydayfragment.PlacesReadFeed process = new Makemydayfragment.PlacesReadFeed();
-                        process.execute(favoriteRefList);
+                        //RefID to Google Place
+                        if (!favoriteRefList.isEmpty()) {
+                            Makemydayfragment.PlacesReadFeed process = new Makemydayfragment.PlacesReadFeed();
+                            process.execute(favoriteRefList);
+                        }
                     }
                 }
 
