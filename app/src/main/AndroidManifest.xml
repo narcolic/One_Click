@@ -46,6 +46,12 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.etiennelawlor.imagegallery.library.activities.ImageGalleryActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label=""
+            android:theme="@style/Theme.ImageGallery" />
+
+        <activity
             android:name="com.example.narco.one_click.LoginActivity"
             android:theme="@style/AppTheme.Dark" />
         <activity
@@ -67,6 +73,14 @@
         </activity>
         <activity
             android:name="com.example.narco.one_click.Drawer.PostcardsActivity"
+            android:exported="true"
+            android:theme="@style/DrawerTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.narco.one_click.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.example.narco.one_click.Drawer.FullScreenImageActivity"
             android:exported="true"
             android:theme="@style/DrawerTheme">
             <meta-data

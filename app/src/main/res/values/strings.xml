@@ -34,5 +34,6 @@
     <string name="ok">OK</string>
     <string name="Avatar_desc">avatar</string>
     <string name="imagegalleryactivity">ImageGalleryActivity</string>
+    <string name="share">Share</string>
 
 </resources>
