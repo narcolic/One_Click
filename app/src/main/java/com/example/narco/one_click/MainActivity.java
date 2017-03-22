@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.example.narco.one_click.Drawer.FavoritesActivity;
 import com.example.narco.one_click.Drawer.InfoActivity;
 import com.example.narco.one_click.Drawer.PostcardsActivity;
-import com.example.narco.one_click.Drawer.SettingsActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
                         new PrimaryDrawerItem().withName(R.string.drawer_my_interests).withIcon(FontAwesome.Icon.faw_paper_plane_o),
                         new PrimaryDrawerItem().withName(R.string.drawer_postcards).withIcon(FontAwesome.Icon.faw_camera_retro),
                         new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(FontAwesome.Icon.faw_cog),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_about).withIcon(FontAwesome.Icon.faw_info_circle)
                 )
                 .addStickyDrawerItems(new SecondaryDrawerItem().withName(R.string.drawer_logout).withIcon(FontAwesome.Icon.faw_sign_out))
@@ -100,11 +98,6 @@ public class MainActivity extends AppCompatActivity {
                                     result.closeDrawer();
                                     break;
                                 case 4:
-                                    Intent intent4 = new Intent(MainActivity.this, SettingsActivity.class);
-                                    startActivity(intent4);
-                                    result.closeDrawer();
-                                    break;
-                                case 5:
                                     Intent intent5 = new Intent(MainActivity.this, InfoActivity.class);
                                     startActivity(intent5);
                                     result.closeDrawer();
@@ -210,10 +203,15 @@ public class MainActivity extends AppCompatActivity {
         View mView = getLayoutInflater().inflate(R.layout.custom_pop, null);
         Button mLogin = (Button) mView.findViewById(R.id.btnLogin);
         DiscreteSeekBar discreteSeekBar = (DiscreteSeekBar) mView.findViewById(R.id.discrete1);
-        databaseReference.child(user.getUid()).child("radius").addValueEventListener(new ValueEventListener() {
+        databaseReference.child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                radius = dataSnapshot.getValue(Integer.class);
+                if (dataSnapshot.child("radius").exists()) {
+                    radius = dataSnapshot.child("radius").getValue(Integer.class);
+                }
+                else{
+                    radius = 1500;
+                }
             }
 
             @Override

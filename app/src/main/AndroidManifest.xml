@@ -91,13 +91,6 @@
             android:name="com.example.narco.one_click.InterestsActivity"
             android:theme="@style/DrawerTheme" />
         <activity
-            android:name="com.example.narco.one_click.Drawer.SettingsActivity"
-            android:theme="@style/DrawerTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.narco.one_click.MainActivity" />
-        </activity>
-        <activity
             android:name=".PlaceDetailActivity"
             android:exported="true"
             android:theme="@style/DrawerTheme" />

@@ -76,20 +76,12 @@ public class FullScreenImageActivity extends AppCompatActivity {
                 startActivity(Intent.createChooser(share, "Share Image"));
             }
         });
-
-
     }
 
     private void applyPalette(Palette palette, ViewGroup viewGroup) {
         int bgColor = getBackgroundColor(palette);
         if (bgColor != -1)
             viewGroup.setBackgroundColor(bgColor);
-    }
-
-    private void applyPalette(Palette palette, View view) {
-        int bgColor = getBackgroundColor(palette);
-        if (bgColor != -1)
-            view.setBackgroundColor(bgColor);
     }
 
     private int getBackgroundColor(Palette palette) {

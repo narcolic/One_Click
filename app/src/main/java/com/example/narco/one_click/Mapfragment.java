@@ -14,15 +14,13 @@ import com.example.narco.one_click.model.GeoRssLocation;
 import com.example.narco.one_click.model.GooglePlace;
 import com.example.narco.one_click.model.GooglePlaceList;
 import com.example.narco.one_click.model.GooglePlacesUtility;
+import com.example.narco.one_click.model.MyItem;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +47,8 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
     private static GoogleMap mMap;
     FirebaseUser user;
     String placesKey;
+    private ClusterManager<MyItem> mClusterManager;
+
 
     public Mapfragment() {
         super();
@@ -70,8 +71,6 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
         userLocation = new Location("");
         nearbyGooglePlaceList = null;
         user = FirebaseAuth.getInstance().getCurrentUser();
-
-
         this.getMapAsync(this);
         return v;
     }
@@ -79,9 +78,9 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
+        mClusterManager = new ClusterManager<>(getContext(), mMap);
         UiSettings UiSettings = googleMap.getUiSettings();
         UiSettings.setZoomControlsEnabled(true);
-
         if (user != null) {
             DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference().child(user.getUid());
             readData(ref1, new Mapfragment.OnGetDataListener() {
@@ -110,6 +109,7 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
                 }
             });
         }
+        mMap.setOnCameraIdleListener(mClusterManager);
     }
 
     private void createMarker() {
@@ -165,7 +165,6 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
     private class PlacesReadFeed extends AsyncTask<List<String>, Void, List<GooglePlaceList>> {
         private final ProgressDialog dialog = new ProgressDialog(getActivity());
 
-
         @SafeVarargs
         @Override
         protected final List<GooglePlaceList> doInBackground(List<String>... urls) {
@@ -178,8 +177,6 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
                     String input = GooglePlacesUtility.readGooglePlaces(urllistia.get(counter), null);
                     Gson gson = new Gson();
                     GooglePlaceList googlePlaceList = gson.fromJson(input, GooglePlaceList.class);
-                    //Log.d("ONSUCCESS1", ""+googlePlaceList.getResults().toString());
-                    Log.d("ONSUCCESS1", "" + googlePlaceList.getResults().size());
                     result.add(googlePlaceList);
                 }
                 return result;
@@ -201,8 +198,6 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
             this.dialog.dismiss();
             reportBack(googlePlaceList);
         }
-
-
     }
 
     protected void reportBack(List<GooglePlaceList> nearbyGooglePlaceList) {
@@ -219,16 +214,19 @@ public class Mapfragment extends SupportMapFragment implements OnMapReadyCallbac
 
                 //List<String> types = place.getTypes();
                 String address = place.getVicinity();
-                //Log.d("ONSUCCESS", "" + address);
                 GooglePlace.Geometry geometry = place.getGeometry();
                 if (geometry != null) {
                     GooglePlace.Geometry.Location location = geometry.getLocation();
                     if (location != null) {
-                        mMap.addMarker(new MarkerOptions()
+                        MyItem infoWindowItem = new MyItem(location.getLat(), location.getLng(), name, address);
+
+                        mClusterManager.addItem(infoWindowItem);
+                        Log.d("CLUSTER", mClusterManager.toString());
+                        /*mMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(location.getLat(), location.getLng()))
                                 .title(name)
                                 .snippet(address)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));*/
                     }
                 }
             }
