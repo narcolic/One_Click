@@ -35,5 +35,6 @@
     <string name="Avatar_desc">avatar</string>
     <string name="imagegalleryactivity">ImageGalleryActivity</string>
     <string name="share">Share</string>
+    <string name="permission_required_toast">perm req</string>
 
 </resources>

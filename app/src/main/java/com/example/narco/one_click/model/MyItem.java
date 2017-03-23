@@ -12,16 +12,28 @@ public class MyItem implements ClusterItem {
     private String mTitle;
     private String mSnippet;
 
+    public GooglePlace getmGooglePlace() {
+        return mGooglePlace;
+    }
+
+    public void setmGooglePlace(GooglePlace mGooglePlace) {
+        this.mGooglePlace = mGooglePlace;
+    }
+
+    private  GooglePlace mGooglePlace;
+
     public MyItem(double lat, double lng) {
         mPosition = new LatLng(lat, lng);
         mTitle = null;
         mSnippet = null;
+        mGooglePlace = null;
     }
 
-    public MyItem(double lat, double lng, String title, String snippet) {
+    public MyItem(double lat, double lng, String title, String snippet, GooglePlace googlePlace) {
         mPosition = new LatLng(lat, lng);
         mTitle = title;
         mSnippet = snippet;
+        mGooglePlace=googlePlace;
     }
 
     @Override

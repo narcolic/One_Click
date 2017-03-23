@@ -77,6 +77,8 @@ public class Postcardsfragment extends Fragment {
                     .centerCrop()
                     .into(imageView);
 
+
+
             imageView.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
 
@@ -86,6 +88,7 @@ public class Postcardsfragment extends Fragment {
 
                 }
             });
+            imageView.setBackgroundResource(R.drawable.bg_round_rect);
 
             layout.addView(imageView, layoutParams);
             linearLayout.addView(layout);
